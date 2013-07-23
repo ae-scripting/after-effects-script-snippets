@@ -9,19 +9,30 @@
 fun();
 function fun(){
 
-app.beginUndoGroup("fun");
+app.beginUndoGroup("rename layers");
 var curComp = app.project.activeItem;
    if (!curComp || !(curComp instanceof CompItem)){
         alert("noComp");
         return;
     }
-
-
+    var promttxt = "layer";
+    if(curComp.selectedLayers.length < 1){
+      alert("no selection");
+      return;
+    }else{
+      promttxt = curComp.selectedLayers[0].name;
+    }
+    var basename = prompt("enter base name will have a number",promttxt);
+    if(basename.length < 1){
+      alert("nothing is to short");
+      return;
+    }
 
     for(var i =0; i < curComp.selectedLayers.length;i++){
-      var name = "Scene" + String(i+1);
-      curComp.selectedLayers.source.name = name;
-      curComp.selectedLayers.name = name;
+      var name = basename + " " + String(i+1);
+      var currLayer = curComp.selectedLayers[i];
+      try{currLayer.source.name = name;}catch(error){ $.writeln( "this layer has no source"); }
+      currLayer.name = name;
     }
 
 app.endUndoGroup();
